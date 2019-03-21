@@ -1,12 +1,13 @@
 var user = require('./userRoutes')
 var blog = require('./blogRoutes')
-let routes = [
+
+var routes = [
 	user,
 	blog
 ]
 
 module.exports = function (app) {
-	for (let i = 0; i < routes.length; i++){
-		app.route(routes[i])
+	for (var i = 0; i < routes.length; i++) {
+		routes[i](app)
 	}
 }
