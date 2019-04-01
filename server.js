@@ -1,6 +1,7 @@
 var express = require('express'),
 	mongoose = require('mongoose'),
 	bodyParser = require('body-parser'),
+	passport = require('passport'),
 	userModel = require('./api/models/userModel'),
 	blogPostModel = require('./api/models/blogPostModel')
 
@@ -10,11 +11,7 @@ var app = express()
 mongoose.Promise = global.Promise
 
 // Middlewares
-app.use(
-	bodyParser.urlencoded({
-		extended: true
-	})
-)
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 // app.use(function (req, res) {
@@ -33,10 +30,8 @@ routes(app)
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/pdxp'
 const PORT = process.env.PORT || 8080
 
-mongoose.connect(MONGODB_URI, {
-	useNewUrlParser: true
-})
-	.then(() => {
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
+	.then(db => {
 		console.log('Connected to database')
 		app.listen(PORT)
 		console.log(`App listening on port ${PORT}`)
