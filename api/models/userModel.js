@@ -1,7 +1,6 @@
-'use strict'
-var mongoose = require('mongoose'),
-	bcrypt = require('bcrypt')
-var Schema = mongoose.Schema
+const mongoose = require('mongoose'),
+	argon2 = require('argon2')
+const Schema = mongoose.Schema
 
 
 var UserSchema = new Schema({
@@ -36,39 +35,20 @@ UserSchema.pre('save', function (next) {
 
 	// generates a salt, hashes password and
 	// replaces user password with password hash
-	bcrypt.hash(user.password, 10)
+	argon2.hash(user.password)
 		.then(hash => {
 			user.password = hash
 			next()
 		})
-		.catch(err => next(err))
-
-	// bcrypt.genSalt(10)
-	// 	.then(salt => {
-	// 		bcrypt.hash(user.password, salt)
-	// 			.then(hash => {
-	// 				user.password = hash
-	// 				next()
-	// 			})
-	// 			.catch(err => next(err))
-	// 	})
-	// 	.catch(err => next(err))
+		.catch(err => { next(err) })
 })
 
-// Hashes provided password credentials 
-// and compares to stored password hash
-UserSchema.methods.comparePassword = function (providedPassword, callback) {
-
-	bcrypt.compare(myPlaintextPassword, hash)
-		.then(function (res) {
-			// res == true
+UserSchema.methods.verifyPassword = function (providedPassword, cb) {
+	argon2.verify(this.password, providedPassword)
+		.then(isMatch => {
+			return cb(null, isMatch)
 		})
-		.catch(err => next(err))
-
-	bcrypt.compare(providedPassword, this.password, function (err, isMatch) {
-		if (err) return callback(err)
-		callback(null, isMatch)
-	})
+		.catch(err => cb(err))
 }
 
 module.exports = mongoose.model('User', UserSchema)
