@@ -1,6 +1,10 @@
 'use strict'
+var user = require('../controllers/userController')
+
 module.exports = function (app) {
-	var user = require('../controllers/userController')
+
+	app.post('/signup', user.signup)
+	app.post('/login', user.login)
 
 	app.route('/user')
 		.get(user.listAll)
