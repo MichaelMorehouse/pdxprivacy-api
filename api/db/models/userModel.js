@@ -45,7 +45,7 @@ UserSchema.pre('save', function (next) {
 
 UserSchema.methods.verifyPassword = async function (providedPassword) {
 	try {
-		return isMatch = await argon22.verify(this.password, providedPassword)
+		return isMatch = await argon2.verify(this.password, providedPassword)
 	} catch (err) {
 		return err
 	}

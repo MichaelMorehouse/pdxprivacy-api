@@ -1,9 +1,8 @@
-'use strict'
 module.exports = function (app) {
 	var blog = require('../controllers/blogController')
 
 	app.route('/blog')
-		.get(blog.listAll)
+		.get(blog.readAll)
 		.post(blog.create)
 
 	app.route('/blog/:blogPostId')
