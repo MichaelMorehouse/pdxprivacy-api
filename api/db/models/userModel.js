@@ -4,9 +4,9 @@ const Schema = mongoose.Schema
 
 
 var UserSchema = new Schema({
-	userName: {
+	username: {
 		type: String,
-		required: 'You must provide a username'
+		// required: 'You must provide a username'
 	},
 	email: {
 		type: String,
