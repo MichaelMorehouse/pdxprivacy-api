@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local').Strategy
 const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
 
-const User = require('../db/models/user')
+const User = require('../db/models/userModel')
 
 // For dev, set the env var SECRET in the start script
 const secret = process.env.SECRET
