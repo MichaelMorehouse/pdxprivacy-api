@@ -11,7 +11,37 @@ exports.login = function (req, res, next) {
 		.catch(err => res.json({ error: 'Unable to generate token' }))
 }
 
-exports.signup = function (req, res, next) {
+// exports.signup = function (req, res, next) {
+// 	const email = req.body.email,
+// 		password = req.body.password
+
+// 	if (!email || !password) {
+// 		return res.status(422).send({ error: 'You must provide email and password' })
+// 	}
+
+// 	// See if a user with the given email exist
+// 	User.findOne({ email: email })
+// 		.then(existingUser => {
+// 			if (existingUser) {
+// 				return res.status(422).send({ error: 'Email is in use' })
+// 			}
+// 			// If not create a new user with passed credentials
+// 			const user = new User(req.body)
+// 			// Respond to successful save with jwt token
+// 			user.save()
+// 				.then(user => {
+// 					jwt.tokenForUser(user)
+// 						.then(token => {
+// 							res.send({ token })
+// 						})
+// 						.catch(err => res.json({ error: 'Unable to generate token' }))
+// 				})
+// 				.catch(err => next(err))
+// 		})
+// 		.catch(err => next(err))
+// }
+
+exports.signup = async function (req, res, next) {
 	const email = req.body.email,
 		password = req.body.password
 
@@ -19,28 +49,22 @@ exports.signup = function (req, res, next) {
 		return res.status(422).send({ error: 'You must provide email and password' })
 	}
 
-	// See if a user with the given email exist
-	User.findOne({ email: email })
-		.then(existingUser => {
-			if (existingUser) {
-				return res.status(422).send({ error: 'Email is in use' })
-			}
-			// If not create a new user with passed credentials
-			const user = new User(req.body)
-			// Respond to successful save with jwt token
-			user.save()
-				.then(user => {
-					jwt.tokenForUser(user)
-						.then(token => {
-							res.send({ token })
-						})
-						.catch(err => res.json({ error: 'Unable to generate token' }))
-				})
-				.catch(err => next(err))
-		})
-		.catch(err => next(err))
-}
+	try {
+		let existingUser = await User.findOne({ email: email })
 
+		if (existingUser) {
+			return res.status(422).send({ error: 'Email is in use' })
+		}
+
+		const newUser = new User(req.body)
+		let user = await newUser.save()
+		let token = await jwt.tokenForUser(user)
+		res.send({ token })
+
+	} catch (err) {
+		res.json({ error: 'Problem registering user' })
+	}
+}
 
 exports.changePassword = function (req, res, next) {
 	const password = req.body.password,
