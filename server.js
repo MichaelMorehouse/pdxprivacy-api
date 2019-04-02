@@ -34,7 +34,7 @@ routes(app)
 // Pull connection string from env var or 
 // fallback to local db during development
 // eslint-disable-next-line no-undef
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ezauth'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/pdxp'
 // eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 8080
 
