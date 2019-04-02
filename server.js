@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(morgan('combined'))
 
-// Use decipher/cipher cervice, also comment/uncommend app.use(cipher) below
+// Use decipher/cipher service, also comment/uncomment app.use(cipher) below
 // app.use(decipher)
 
 routes(app)
