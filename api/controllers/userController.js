@@ -1,14 +1,15 @@
 const User = require('../db/models/userModel'),
 	jwt = require('../services/jwt')
 
-exports.login = function (req, res, next) {
-	// User has already been authenticated by passport
-	// We just need to give them a token
-	jwt.tokenForUser(req.user)
-		.then(token => {
-			res.send({ token })
-		})
-		.catch(err => res.json({ error: 'Unable to generate token' }))
+exports.login = async function (req, res, next) {
+	try {
+		// User has already been authenticated by passport
+		// We just need to give them a token
+		let token = await jwt.tokenForUser(req.user)
+		res.send({ token })
+	} catch (err) {
+		res.json({ error: 'Unable to login' })
+	}
 }
 
 exports.signup = async function (req, res, next) {
@@ -36,27 +37,26 @@ exports.signup = async function (req, res, next) {
 	}
 }
 
-exports.changePassword = function (req, res, next) {
+exports.changePassword = async function (req, res, next) {
 	const password = req.body.password,
 		newPassword = req.body.newPassword
 
-	if (!password || !newPassword) {
-		return res.status(422).send({ error: 'You must provide old and new passwords' })
-	}
+	try {
+		// Request must have old and new passwords
+		if (!password || !newPassword)
+			return res.status(422).send({ error: 'You must provide old and new passwords' })
 
-	// with stored hashed user password
-	req.user.verifyPassword(password, function (err, isMatch) {
-		if (err) next(err)
-		if (!isMatch) return res.status(422).send({ error: 'Incorrect credentials' })
+		let isMatch = await req.user.verifyPassword(password)
+		if (!isMatch)
+			return res.status(422).send({ error: 'Incorrect credentials' })
+
+		// If old password is correct, set to new password
 		req.user.password = newPassword
-		req.user.save()
-			.then(user => {
-				jwt.tokenForUser(user)
-					.then(token => {
-						res.send({ token })
-					})
-					.catch(err => res.json({ error: 'Unable to generate token' }))
-			})
-			.catch(err => next(err))
-	})
+		let user = await req.user.save()
+		let token = await jwt.tokenForUser(user)
+		res.send({ token })
+
+	} catch (err) {
+		res.send({ error: 'Problem changing password' })
+	}
 }

@@ -43,12 +43,12 @@ UserSchema.pre('save', function (next) {
 		.catch(err => { next(err) })
 })
 
-UserSchema.methods.verifyPassword = function (providedPassword, cb) {
-	argon2.verify(this.password, providedPassword)
-		.then(isMatch => {
-			return cb(null, isMatch)
-		})
-		.catch(err => cb(err))
+UserSchema.methods.verifyPassword = async function (providedPassword) {
+	try {
+		return isMatch = await argon22.verify(this.password, providedPassword)
+	} catch (err) {
+		return err
+	}
 }
 
 module.exports = mongoose.model('User', UserSchema)
