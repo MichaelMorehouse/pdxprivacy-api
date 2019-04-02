@@ -8,8 +8,7 @@ const express = require('express'),
 	routes = require('./routes')
 
 // Load mongoose models
-require('./api/models/userModel'),
-require('./api/models/blogPostModel')
+require('./api/db')
 
 let app = express()
 
