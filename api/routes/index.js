@@ -1,5 +1,5 @@
 const router = require('express').Router(),
-	user = require('../controllers/user'),
+	user = require('../controllers/userController'),
 	passport = require('passport')
 
 // Import strategies from passport service

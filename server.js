@@ -5,7 +5,7 @@ const express = require('express'),
 	morgan = require('morgan'),
 	// cipher = require('./services/cipher').cipherService,
 	// decipher = require('./services/cipher').decipherService,
-	routes = require('./routes')
+	routes = require('./api/routes')
 
 // Load mongoose models
 require('./api/db')
